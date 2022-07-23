@@ -69,26 +69,14 @@ function FormDataTree( formData ) {
 	}
 }
 
-
-/**
- * 
- */
 FormDataTree.prototype.entries = function () {
 	return this.tree.entries();
 };
 
-
-/**
- * 
- */
 FormDataTree.prototype.get = function ( name ) {
 	return this.tree.get( name );
 };
 
-
-/**
- * 
- */
 FormDataTree.prototype.getAll = function ( name ) {
 	if ( ! this.has( name ) ) {
 		return [];
@@ -111,29 +99,16 @@ FormDataTree.prototype.getAll = function ( name ) {
 	return walkBranch( this.get( name ) );
 };
 
-
-/**
- * 
- */
 FormDataTree.prototype.has = function ( name ) {
 	return this.tree.has( name );
 };
 
-
-/**
- * 
- */
 FormDataTree.prototype.keys = function () {
 	return this.tree.keys();
 };
 
-
-/**
- * 
- */
 FormDataTree.prototype.values = function () {
 	return this.tree.values();
 };
-
 
 export default FormDataTree;
