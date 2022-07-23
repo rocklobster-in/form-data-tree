@@ -1,0 +1,19 @@
+{
+  "name": "@takayukister/form-data-tree",
+  "version": "1.0.0",
+  "description": "FormDataTree fills a gap between the FormData interface and PHP superglobal variables.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/takayukister/form-data-tree.git"
+  },
+  "author": "Takayuki Miyoshi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/takayukister/form-data-tree/issues"
+  },
+  "homepage": "https://github.com/takayukister/form-data-tree#readme"
+}
