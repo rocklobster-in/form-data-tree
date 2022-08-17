@@ -1,5 +1,5 @@
 {
-  "name": "@takayukister/form-data-tree",
+  "name": "@contactable/form-data-tree",
   "version": "1.0.0",
   "description": "FormDataTree fills a gap between the FormData interface and PHP superglobal variables.",
   "main": "index.js",
