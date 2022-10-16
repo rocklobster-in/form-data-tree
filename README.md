@@ -2,6 +2,7 @@
 
 FormDataTree fills a gap between the FormData interface and PHP superglobal variables.
 
+
 ## What problems does it solve?
 
 To access user input data through a web form on client-side, you can use the [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) interface. A FormData object provides a set of key/value pairs representing form fields and their values, and the data model emulates the `multipart/form-data` encoding type.
@@ -55,3 +56,28 @@ PHP treats the square brackets as an array literal, so the `$_POST` variable wil
 ```
 
 This gap becomes a problem when you need to process user input data in a consistent way on client-side and on server-side. FormDataTree has been created to resolve this problem. A FormDataTree object works as a wrapper of a FormData object, and has the ability to provide user input data in a structure equivalent to PHP's `$_POST` variable.
+
+
+## Installation
+
+```
+npm install @contactable/form-data-tree --save
+```
+
+
+## Usage
+
+```
+import FormDataTree from '@contactable/form-data-tree';
+
+// formData: FormData object
+const formDataTree = new FormDataTree( formData );
+
+// getAll() returns a single-layer array of field values.
+// name: The field name
+const values = formDataTree.getAll( name );
+
+// get() returns a Map object representing the field branch.
+// name: The field name
+const map = formDataTree.get( name );
+```
