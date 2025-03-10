@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/takayukister/form-data-tree.git"
+    "url": "git+https://github.com/rocklobster-in/form-data-tree.git"
   },
   "author": "Takayuki Miyoshi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/takayukister/form-data-tree/issues"
+    "url": "https://github.com/rocklobster-in/form-data-tree/issues"
   },
-  "homepage": "https://github.com/takayukister/form-data-tree#readme"
+  "homepage": "https://github.com/rocklobster-in/form-data-tree#readme"
 }
