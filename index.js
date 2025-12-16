@@ -1,3 +1,5 @@
+import { dissolveName } from './helpers';
+
 function FormDataTree( formData ) {
 	this.formData = {};
 	this.tree = {};
