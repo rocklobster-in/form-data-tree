@@ -1,4 +1,4 @@
-import { dissolveName } from './helpers';
+import { dissolveName, excludeBlank } from './helpers';
 
 function FormDataTree( formData ) {
 	this.formData = {};
@@ -80,25 +80,27 @@ FormDataTree.prototype.get = function ( name ) {
 };
 
 FormDataTree.prototype.getAll = function ( name ) {
-	if ( ! this.has( name ) ) {
-		return [];
+	const nameParts = dissolveName( name );
+
+	if ( 0 === nameParts.length ) {
+		return new Map();
 	}
 
-	const walkBranch = branch => {
-		const branches = [];
+	let tree = this.tree, currentNamePart;
 
-		if ( branch instanceof Map ) {
-			for ( const [ key, value ] of branch ) {
-				branches.push( ...walkBranch( value ) );
-			}
-		} else if ( '' !== branch ) {
-			branches.push( branch );
+	while ( currentNamePart = nameParts.shift() ) {
+		if ( tree.has( currentNamePart ) ) {
+			tree = tree.get( currentNamePart );
+		} else {
+			return new Map();
 		}
+	}
 
-		return branches;
-	};
+	if ( ! ( tree instanceof Map ) ) {
+		tree = new Map( [ [ 0, tree ] ] );
+	}
 
-	return walkBranch( this.get( name ) );
+	return excludeBlank( tree );
 };
 
 FormDataTree.prototype.has = function ( name ) {

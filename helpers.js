@@ -16,3 +16,29 @@ export const dissolveName = name => {
 		return [ core ];
 	}
 };
+
+
+export const excludeBlank = tree => {
+	if ( tree instanceof Map ) {
+		const map = new Map();
+
+		for ( const [ key, value ] of tree ) {
+			const result = excludeBlank( value );
+
+			if (
+				result instanceof Map && 0 < result.size ||
+				result instanceof File && 0 < result.size ||
+				'string' === typeof result && '' !== result
+			) {
+				map.set( key, result );
+			}
+		}
+
+		return map;
+	} else if ( tree instanceof File ) {
+		return tree;
+	} else {
+		const value = String( tree );
+		return value.trim();
+	}
+};
