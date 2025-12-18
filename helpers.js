@@ -18,27 +18,29 @@ export const dissolveName = name => {
 };
 
 
-export const excludeBlank = tree => {
+export const excludeBlank = ( tree, filter = 'string' ) => {
 	if ( tree instanceof Map ) {
 		const map = new Map();
 
 		for ( const [ key, value ] of tree ) {
-			const result = excludeBlank( value );
+			const result = excludeBlank( value, filter );
 
 			if (
-				result instanceof Map && 0 < result.size ||
-				result instanceof File && 0 < result.size ||
-				'string' === typeof result && '' !== result
+				result instanceof Map && result.size ||
+				'string' === filter && 'string' === typeof result && '' !== result ||
+				'file' === filter && result instanceof File && result.size ||
+				'function' === typeof filter && filter( key, result )
 			) {
 				map.set( key, result );
 			}
 		}
 
 		return map;
-	} else if ( tree instanceof File ) {
-		return tree;
 	} else {
-		const value = String( tree );
-		return value.trim();
+		if ( 'string' === typeof tree ) {
+			tree = tree.trim();
+		}
+
+		return tree;
 	}
 };
