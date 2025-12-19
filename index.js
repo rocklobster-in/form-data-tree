@@ -107,6 +107,10 @@ FormDataTree.prototype.getAll = function ( name, filter = 'string' ) {
 	return tree;
 };
 
+FormDataTree.prototype.getAllFiles = function ( name ) {
+	return this.getAll( name, 'file' );
+};
+
 FormDataTree.prototype.has = function ( name ) {
 	return this.tree.has( name );
 };

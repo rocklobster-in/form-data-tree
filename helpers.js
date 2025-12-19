@@ -25,22 +25,27 @@ export const excludeBlank = ( tree, filter = 'string' ) => {
 		for ( const [ key, value ] of tree ) {
 			const result = excludeBlank( value, filter );
 
-			if (
-				result instanceof Map && result.size ||
-				'string' === filter && 'string' === typeof result && '' !== result ||
-				'file' === filter && result instanceof File && result.size ||
-				'function' === typeof filter && filter( key, result )
-			) {
+			if ( result ) {
 				map.set( key, result );
 			}
 		}
 
-		return map;
+		if ( map.size ) {
+			return map;
+		}
 	} else {
 		if ( 'string' === typeof tree ) {
 			tree = tree.trim();
 		}
 
-		return tree;
+		if ( 'string' === filter ) {
+			filter = value => 'string' === typeof value && '' !== value;
+		} else if ( 'file' === filter ) {
+			filter = value => value instanceof File && value.size;
+		}
+
+		if ( filter( tree ) ) {
+			return tree;
+		}
 	}
 };
