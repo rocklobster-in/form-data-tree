@@ -79,7 +79,7 @@ FormDataTree.prototype.get = function ( name ) {
 	return this.tree.get( name );
 };
 
-FormDataTree.prototype.getAll = function ( name ) {
+FormDataTree.prototype.getAll = function ( name, filter = 'string' ) {
 	const nameParts = dissolveName( name );
 
 	if ( ! nameParts.length ) {
@@ -96,9 +96,11 @@ FormDataTree.prototype.getAll = function ( name ) {
 		}
 	}
 
-	tree = excludeBlank( tree );
+	tree = excludeBlank( tree, filter );
 
-	if ( ! ( tree instanceof Map ) ) {
+	if ( ! tree ) {
+		tree = new Map();
+	} else if ( ! ( tree instanceof Map ) ) {
 		tree = new Map( [ [ 0, tree ] ] );
 	}
 
