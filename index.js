@@ -72,6 +72,9 @@ function FormDataTree( formData ) {
 }
 
 
+/**
+ * Retrieves a multi-layered map associated with the given field name.
+ */
 FormDataTree.prototype.getAll = function ( name, filter = 'string' ) {
 	const nameParts = dissolveName( name );
 
@@ -101,6 +104,9 @@ FormDataTree.prototype.getAll = function ( name, filter = 'string' ) {
 };
 
 
+/**
+ * Retrieves a multi-layered map of files associated with the given field name.
+ */
 FormDataTree.prototype.getAllFiles = function ( name ) {
 	return this.getAll( name, 'file' );
 };
