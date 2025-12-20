@@ -1,3 +1,10 @@
+
+/**
+ * Returns components of the given name.
+ *
+ * @param {string} name - Field name, such as 'abc' or 'abc[de]'.
+ * @return {Array} Single dimension array of name components.
+ */
 export const dissolveName = name => {
 	const found = name.trim().match(
 		/^([a-z][0-9a-z:_-]*)((?:\[\s*[a-z][0-9a-z:_-]*\s*\])*)$/i
@@ -18,6 +25,9 @@ export const dissolveName = name => {
 };
 
 
+/**
+ * Outputs the input value from which blank values are excluded.
+ */
 export const excludeBlank = ( tree, filter = 'string' ) => {
 	if ( tree instanceof Map ) {
 		const map = new Map();
@@ -51,6 +61,9 @@ export const excludeBlank = ( tree, filter = 'string' ) => {
 };
 
 
+/**
+ * Converts a multi-layered map to a flat array.
+ */
 export const flattenTree = ( tree ) => {
 	if ( tree instanceof Map ) {
 		const result = [];
