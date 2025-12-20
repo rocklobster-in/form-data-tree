@@ -1,3 +1,5 @@
+import { dissolveName, excludeBlank } from './helpers';
+
 function FormDataTree( formData ) {
 	this.formData = {};
 	this.tree = {};
@@ -69,46 +71,45 @@ function FormDataTree( formData ) {
 	}
 }
 
-FormDataTree.prototype.entries = function () {
-	return this.tree.entries();
-};
 
-FormDataTree.prototype.get = function ( name ) {
-	return this.tree.get( name );
-};
+/**
+ * Retrieves a multi-layered map associated with the given field name.
+ */
+FormDataTree.prototype.getAll = function ( name, filter = 'string' ) {
+	const nameParts = dissolveName( name );
 
-FormDataTree.prototype.getAll = function ( name ) {
-	if ( ! this.has( name ) ) {
-		return [];
+	if ( ! nameParts.length ) {
+		return new Map();
 	}
 
-	const walkBranch = branch => {
-		const branches = [];
+	let tree = this.tree, currentNamePart;
 
-		if ( branch instanceof Map ) {
-			for ( const [ key, value ] of branch ) {
-				branches.push( ...walkBranch( value ) );
-			}
-		} else if ( '' !== branch ) {
-			branches.push( branch );
+	while ( currentNamePart = nameParts.shift() ) {
+		if ( tree.has( currentNamePart ) ) {
+			tree = tree.get( currentNamePart );
+		} else {
+			return new Map();
 		}
+	}
 
-		return branches;
-	};
+	tree = excludeBlank( tree, filter );
 
-	return walkBranch( this.get( name ) );
+	if ( ! tree ) {
+		tree = new Map();
+	} else if ( ! ( tree instanceof Map ) ) {
+		tree = new Map( [ [ 0, tree ] ] );
+	}
+
+	return tree;
 };
 
-FormDataTree.prototype.has = function ( name ) {
-	return this.tree.has( name );
+
+/**
+ * Retrieves a multi-layered map of files associated with the given field name.
+ */
+FormDataTree.prototype.getAllFiles = function ( name ) {
+	return this.getAll( name, 'file' );
 };
 
-FormDataTree.prototype.keys = function () {
-	return this.tree.keys();
-};
-
-FormDataTree.prototype.values = function () {
-	return this.tree.values();
-};
 
 export default FormDataTree;
