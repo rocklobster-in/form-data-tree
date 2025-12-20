@@ -73,11 +73,12 @@ import FormDataTree from '@contactable/form-data-tree';
 // formData: FormData object
 const formDataTree = new FormDataTree( formData );
 
-// getAll() returns a single-layer array of field values.
-// name: The field name
-const values = formDataTree.getAll( name );
+// The getAll() method takes a field name as a parameter and returns a tree
+// or multi-layered map containing string values associated with that name.
+const stringTree = formDataTree.getAll( 'your-email' );
 
-// get() returns a Map object representing the field branch.
-// name: The field name
-const map = formDataTree.get( name );
+// The getAllFiles() method takes a field name as a parameter and returns
+// a tree or multi-layered map containing File objects associated with
+// that name.
+const fileTree = formDataTree.getAllFiles( 'your-resume' );
 ```
