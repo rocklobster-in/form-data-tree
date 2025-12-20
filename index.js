@@ -71,13 +71,6 @@ function FormDataTree( formData ) {
 	}
 }
 
-FormDataTree.prototype.entries = function () {
-	return this.tree.entries();
-};
-
-FormDataTree.prototype.get = function ( name ) {
-	return this.tree.get( name );
-};
 
 FormDataTree.prototype.getAll = function ( name, filter = 'string' ) {
 	const nameParts = dissolveName( name );
@@ -107,20 +100,10 @@ FormDataTree.prototype.getAll = function ( name, filter = 'string' ) {
 	return tree;
 };
 
+
 FormDataTree.prototype.getAllFiles = function ( name ) {
 	return this.getAll( name, 'file' );
 };
 
-FormDataTree.prototype.has = function ( name ) {
-	return this.tree.has( name );
-};
-
-FormDataTree.prototype.keys = function () {
-	return this.tree.keys();
-};
-
-FormDataTree.prototype.values = function () {
-	return this.tree.values();
-};
 
 export default FormDataTree;
