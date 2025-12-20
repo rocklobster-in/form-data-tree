@@ -1,6 +1,6 @@
 {
   "name": "@rocklobsterinc/form-data-tree",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "FormDataTree fills a gap between the FormData interface and PHP superglobal variables.",
   "main": "index.js",
   "scripts": {
