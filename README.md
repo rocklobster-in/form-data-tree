@@ -61,14 +61,14 @@ This gap becomes a problem when you need to process user input data in a consist
 ## Installation
 
 ```
-npm install @contactable/form-data-tree --save
+npm install @rocklobsterinc/form-data-tree --save
 ```
 
 
 ## Usage
 
 ```
-import FormDataTree from '@contactable/form-data-tree';
+import FormDataTree from '@rocklobsterinc/form-data-tree';
 
 // formData: FormData object
 const formDataTree = new FormDataTree( formData );
