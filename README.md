@@ -61,7 +61,7 @@ This gap becomes a problem when you need to process user input data in a consist
 ## Installation
 
 ```
-npm install @rocklobsterinc/form-data-tree --save
+npm install @rocklobsterinc/form-data-tree
 ```
 
 
