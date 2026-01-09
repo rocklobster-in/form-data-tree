@@ -1,13 +1,10 @@
 import { dissolveName, excludeBlank } from './helpers';
 
-function FormDataTree( formData ) {
-	this.formData = {};
-	this.tree = {};
+export default function FormDataTree( formData ) {
+	this.tree = new Map();
 
-	if ( formData instanceof FormData ) {
-		this.formData = formData;
-	} else {
-		return this;
+	if ( ! ( formData instanceof FormData ) ) {
+		throw new TypeError( "'formData' is not a FormData object" );
 	}
 
 	const createBranch = () => {
@@ -35,7 +32,7 @@ function FormDataTree( formData ) {
 
 	const reQueryKey = /^(?<name>[a-z][-a-z0-9_:]*)(?<array>(?:\[(?:[a-z][-a-z0-9_:]*|[0-9]*)\])*)/i;
 
-	for ( const [ key, value ] of this.formData ) {
+	for ( const [ key, value ] of formData ) {
 		const found = key.match( reQueryKey );
 
 		if ( ! found ) {
@@ -110,6 +107,3 @@ FormDataTree.prototype.getAll = function ( name, filter = 'string' ) {
 FormDataTree.prototype.getAllFiles = function ( name ) {
 	return this.getAll( name, 'file' );
 };
-
-
-export default FormDataTree;
