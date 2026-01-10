@@ -11,7 +11,7 @@ export default function FormDataTree( formData ) {
 		const branch = new Map();
 		branch.largestIndex = 0;
 
-		branch.set = function ( key, value ) {
+		branch.set = ( key, value ) => {
 			if ( '' === key ) {
 				key = branch.largestIndex++;
 			} else if ( /^[0-9]+$/.test( key ) ) {
@@ -22,7 +22,7 @@ export default function FormDataTree( formData ) {
 				}
 			}
 
-			Map.prototype.set.call( branch, key, value );
+			return Map.prototype.set.call( branch, key, value );
 		};
 
 		return branch;
@@ -30,41 +30,29 @@ export default function FormDataTree( formData ) {
 
 	this.tree = createBranch();
 
-	const reQueryKey = /^(?<name>[a-z][-a-z0-9_:]*)(?<array>(?:\[(?:[a-z][-a-z0-9_:]*|[0-9]*)\])*)/i;
-
 	for ( const [ key, value ] of formData ) {
-		const found = key.match( reQueryKey );
+		const nameParts = dissolveName( key );
+		const lastName = nameParts.pop();
 
-		if ( ! found ) {
+		if ( undefined === lastName ) {
 			continue;
 		}
 
-		if ( '' === found.groups.array ) {
-			this.tree.set( found.groups.name, value );
-		} else {
-			const arrayKeysChain = [
-				...found.groups.array.matchAll( /\[([a-z][-a-z0-9_:]*|[0-9]*)\]/ig )
-			].map( ( [ matched, group1 ] ) => group1 );
+		const terminalNode = nameParts.reduce( ( node, name ) => {
+			if ( /^[0-9]+$/.test( name ) ) {
+				name = parseInt( name );
+			}
 
-			arrayKeysChain.unshift( found.groups.name );
-			const lastKey = arrayKeysChain.pop();
+			if ( node.get( name ) instanceof Map ) {
+				return node.get( name );
+			}
 
-			const terminalNode = arrayKeysChain.reduce( ( prev, cur ) => {
-				if ( /^[0-9]+$/.test( cur ) ) {
-					cur = parseInt( cur );
-				}
+			const branch = createBranch();
+			node.set( name, branch );
+			return branch;
+		}, this.tree );
 
-				if ( prev.get( cur ) instanceof Map ) {
-					return prev.get( cur );
-				}
-
-				const branch = createBranch();
-				prev.set( cur, branch );
-				return branch;
-			}, this.tree );
-
-			terminalNode.set( lastKey, value );
-		}
+		terminalNode.set( lastName, value );
 	}
 }
 
