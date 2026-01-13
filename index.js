@@ -1,97 +1,79 @@
 import { dissolveName, excludeBlank } from './helpers';
 
-export default function FormDataTree( formData ) {
-	this.tree = new Map();
+export default function FormDataTree() {
+	this.branches = new Map();
+	this.largestIndex = 0;
+}
 
+FormDataTree.prototype = {
+	get( key ) {
+		return this.branches.get( key );
+	},
+
+	getAll( name, filter = 'string' ) {
+		// TODO
+	},
+
+	getAllFiles( name ) {
+		// TODO
+	},
+
+	has( key ) {
+		return this.branches.has( key );
+	},
+
+	set( key, value ) {
+		if ( '' === key ) {
+			key = this.largestIndex++;
+		} else if ( /^[0-9]+$/.test( key ) ) {
+			key = parseInt( key );
+
+			if ( this.largestIndex <= key ) {
+				this.largestIndex = key + 1;
+			}
+		}
+
+		if ( ! ( value instanceof FormDataTree || value instanceof File ) ) {
+			value = value.toString();
+		}
+
+		this.branches.set( key, value );
+
+		return this;
+	},
+};
+
+
+FormDataTree.from = function ( formData ) {
 	if ( ! ( formData instanceof FormData ) ) {
 		throw new TypeError( "'formData' is not a FormData object" );
 	}
 
-	const createBranch = () => {
-		const branch = new Map();
-		branch.largestIndex = 0;
-
-		branch.set = ( key, value ) => {
-			if ( '' === key ) {
-				key = branch.largestIndex++;
-			} else if ( /^[0-9]+$/.test( key ) ) {
-				key = parseInt( key );
-
-				if ( branch.largestIndex <= key ) {
-					branch.largestIndex = key + 1;
-				}
-			}
-
-			return Map.prototype.set.call( branch, key, value );
-		};
-
-		return branch;
-	};
-
-	this.tree = createBranch();
+	const tree = new FormDataTree();
 
 	for ( const [ key, value ] of formData ) {
 		const nameParts = dissolveName( key );
-		const lastName = nameParts.pop();
 
-		if ( undefined === lastName ) {
+		if ( ! nameParts.length ) {
 			continue;
 		}
 
-		const terminalNode = nameParts.reduce( ( node, name ) => {
-			if ( /^[0-9]+$/.test( name ) ) {
-				name = parseInt( name );
+		const lastName = nameParts.pop();
+
+		const terminalNode = nameParts.reduce( ( previous, current ) => {
+			if ( previous.get( current ) instanceof FormDataTree ) {
+				return previous.get( current );
 			}
 
-			if ( node.get( name ) instanceof Map ) {
-				return node.get( name );
-			}
+			const branch = new FormDataTree();
 
-			const branch = createBranch();
-			node.set( name, branch );
+			previous.set( current, branch );
+
 			return branch;
-		}, this.tree );
+		}, tree );
 
 		terminalNode.set( lastName, value );
 	}
-}
-
-
-/**
- * Retrieves a multi-layered map associated with the given field name.
- */
-FormDataTree.prototype.getAll = function ( name, filter = 'string' ) {
-	const nameParts = dissolveName( name );
-
-	if ( ! nameParts.length ) {
-		return new Map();
-	}
-
-	let tree = this.tree, currentNamePart;
-
-	while ( currentNamePart = nameParts.shift() ) {
-		if ( tree.has( currentNamePart ) ) {
-			tree = tree.get( currentNamePart );
-		} else {
-			return new Map();
-		}
-	}
-
-	tree = excludeBlank( tree, filter );
-
-	if ( ! tree ) {
-		tree = new Map();
-	} else if ( ! ( tree instanceof Map ) ) {
-		tree = new Map( [ [ 0, tree ] ] );
-	}
 
 	return tree;
-};
-
-
-/**
- * Retrieves a multi-layered map of files associated with the given field name.
- */
-FormDataTree.prototype.getAllFiles = function ( name ) {
-	return this.getAll( name, 'file' );
-};
+}
