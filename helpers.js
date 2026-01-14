@@ -28,11 +28,11 @@ export const dissolveName = name => {
 /**
  * Outputs the input value from which blank values are excluded.
  */
-export const excludeBlank = ( tree, filter = 'string' ) => {
-	if ( tree instanceof Map ) {
+export const excludeBlank = ( input, filter = 'string' ) => {
+	if ( input instanceof Map ) {
 		const map = new Map();
 
-		for ( const [ key, value ] of tree ) {
+		for ( const [ key, value ] of input ) {
 			const result = excludeBlank( value, filter );
 
 			if ( result ) {
@@ -44,8 +44,8 @@ export const excludeBlank = ( tree, filter = 'string' ) => {
 			return map;
 		}
 	} else {
-		if ( 'string' === typeof tree ) {
-			tree = tree.trim();
+		if ( 'string' === typeof input ) {
+			input = input.trim();
 		}
 
 		if ( 'string' === filter ) {
@@ -54,8 +54,8 @@ export const excludeBlank = ( tree, filter = 'string' ) => {
 			filter = value => value instanceof File && value.size;
 		}
 
-		if ( filter( tree ) ) {
-			return tree;
+		if ( filter( input ) ) {
+			return input;
 		}
 	}
 };
