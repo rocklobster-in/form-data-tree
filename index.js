@@ -28,7 +28,9 @@ FormDataTree.prototype = {
 			branch = branch.trunk[ currentNamePart ];
 		}
 
-		return excludeBlank( branch.valueOf(), filter ) ?? {};
+		const result = excludeBlank( branch.valueOf(), filter ) ?? {};
+
+		return ( result instanceof Object ) ? result : { 0: result };
 	},
 
 	getAllFiles( name ) {
