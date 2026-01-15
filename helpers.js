@@ -29,33 +29,31 @@ export const dissolveName = name => {
  * Outputs the input value from which blank values are excluded.
  */
 export const excludeBlank = ( input, filter = 'string' ) => {
-	if ( input instanceof Map ) {
-		const map = new Map();
+	if ( 'string' === filter ) {
+		filter = value => 'string' === typeof value && '' !== value.trim();
+	} else if ( 'file' === filter ) {
+		filter = value => value instanceof File && value.size;
+	}
 
-		for ( const [ key, value ] of input ) {
+	input ??= '';
+
+	if ( ! ( input instanceof Object ) ) {
+		input = String( input );
+	}
+
+	if ( 'string' === typeof input || input instanceof File ) {
+		return filter( input ) ? input : undefined;
+	} else {
+		const output = {};
+
+		for ( const [ key, value ] of Object.entries( input ) ) {
 			const result = excludeBlank( value, filter );
 
 			if ( result ) {
-				map.set( key, result );
+				output[ key ] = result;
 			}
 		}
 
-		if ( map.size ) {
-			return map;
-		}
-	} else {
-		if ( 'string' === typeof input ) {
-			input = input.trim();
-		}
-
-		if ( 'string' === filter ) {
-			filter = value => 'string' === typeof value && '' !== value;
-		} else if ( 'file' === filter ) {
-			filter = value => value instanceof File && value.size;
-		}
-
-		if ( filter( input ) ) {
-			return input;
-		}
+		return Object.values( output ).length ? output : undefined;
 	}
 };
