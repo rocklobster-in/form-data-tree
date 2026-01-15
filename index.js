@@ -1,7 +1,8 @@
 import { dissolveName, excludeBlank } from './helpers';
 
 export default function FormDataTree() {
-	this.trunk = FormDataTree.branch();
+	this.trunk = {};
+	this.largestIndex = 0;
 }
 
 
@@ -14,70 +15,56 @@ FormDataTree.prototype = {
 			return {};
 		}
 
-		let branch = this.trunk, currentNamePart;
+		let branch = this, currentNamePart;
 
 		while ( currentNamePart = nameParts.shift() ) {
 			if (
 				/^[0-9]*$/.test( currentNamePart ) ||
-				! branch.has( currentNamePart )
+				undefined === branch.trunk[ currentNamePart ]
 			) {
 				return {};
 			}
 
-			branch = branch.get( currentNamePart );
+			branch = branch.trunk[ currentNamePart ];
 		}
 
-		branch = excludeBlank( branch, filter );
-
-		if ( ! ( branch instanceof Object ) ) {
-			branch = new Map( [ [ 0, branch ] ] );
-		}
-
-		return branch.toObject();
+		return excludeBlank( branch.valueOf(), filter );
 	},
 
 	getAllFiles( name ) {
 		return this.getAll( name, 'file' );
 	},
 
-};
-
-
-FormDataTree.branch = () => {
-	const map = new Map();
-
-	map.largestIndex = 0;
-
-	map.set = ( key, value ) => {
+	set( key, value ) {
 		if ( '' === key ) {
-			key = map.largestIndex++;
+			key = this.largestIndex++;
 		} else if ( /^[0-9]+$/.test( key ) ) {
 			key = parseInt( key );
 
-			if ( map.largestIndex <= key ) {
-				map.largestIndex = key + 1;
+			if ( this.largestIndex <= key ) {
+				this.largestIndex = key + 1;
 			}
 		}
 
-		if ( ! ( value instanceof Map || value instanceof File ) ) {
+		if ( ! ( value instanceof Object ) ) {
 			value = value.toString();
 		}
 
-		return Map.prototype.set.call( map, key, value );
-	};
+		this.trunk[ key.toString() ] = value;
 
-	map.toObject = () => {
-		const resultObj = {};
+		return this;
+	},
 
-		map.forEach( ( value, key ) => {
-			resultObj[ key ] = Object.hasOwn( value, 'toObject' )
-				? value.toObject() : value;
-		} );
+	valueOf() {
+		const obj = {};
 
-		return resultObj;
-	};
+		for ( const [ key, value ] of Object.entries( this.trunk ) ) {
+			obj[ key ] = value.valueOf();
+		}
 
-	return map;
+		return obj;
+	},
+
 };
 
 
@@ -98,16 +85,16 @@ FormDataTree.from = formData => {
 		const lastName = nameParts.pop();
 
 		const terminalNode = nameParts.reduce( ( previous, current ) => {
-			if ( Object.hasOwn( previous.get( current ), 'set' ) ) {
-				return previous.get( current );
+			if ( previous.trunk[ current ] instanceof FormDataTree ) {
+				return previous.trunk[ current ];
 			}
 
-			const branch = FormDataTree.branch();
+			const newNode = new FormDataTree();
 
-			previous.set( current, branch );
+			previous.set( current, newNode );
 
-			return branch;
-		}, tree.trunk );
+			return newNode;
+		}, tree );
 
 		terminalNode.set( lastName, value );
 	}
