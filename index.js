@@ -84,6 +84,19 @@ FormDataTree.from = formData => {
 			continue;
 		}
 
+		// Don't include empty values!
+		if ( 'string' === typeof value ) {
+			if ( '' === value.trim() ) {
+				continue;
+			}
+		} else if ( value instanceof Blob ) {
+			if ( ! value.size ) {
+				continue;
+			}
+		} else {
+			continue;
+		}
+
 		const lastName = nameParts.pop();
 
 		const terminalNode = nameParts.reduce( ( previous, current ) => {
