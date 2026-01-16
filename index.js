@@ -19,8 +19,8 @@ FormDataTree.prototype = {
 			if ( value instanceof FormDataTree ) {
 				value = value.filter( callback );
 
-				if ( Object.values( value.trunk ).length ) {
-					newTree.set( key, value.filter( callback ) );
+				if ( value.size ) {
+					newTree.set( key, value );
 				}
 			} else {
 				if ( callback( value ) ) {
@@ -92,11 +92,15 @@ FormDataTree.prototype = {
 	valueOf() {
 		const obj = {};
 
-		for ( const [ key, value ] of Object.entries( this.trunk ) ) {
+		for ( let [ key, value ] of Object.entries( this.trunk ) ) {
 			obj[ key ] = value.valueOf();
 		}
 
 		return obj;
+	},
+
+	get size() {
+		return Object.keys( this.trunk ).length;
 	},
 
 };
