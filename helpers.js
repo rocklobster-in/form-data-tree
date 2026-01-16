@@ -23,37 +23,3 @@ export const dissolveName = name => {
 		return [ trunk ];
 	}
 };
-
-
-/**
- * Outputs the input value from which blank values are excluded.
- */
-export const excludeBlank = ( input, filter = 'string' ) => {
-	if ( 'string' === filter ) {
-		filter = value => 'string' === typeof value && '' !== value.trim();
-	} else if ( 'file' === filter ) {
-		filter = value => value instanceof File && value.size;
-	}
-
-	input ??= '';
-
-	if ( ! ( input instanceof Object ) ) {
-		input = String( input );
-	}
-
-	if ( 'string' === typeof input || input instanceof File ) {
-		return filter( input ) ? input : undefined;
-	} else {
-		const output = {};
-
-		for ( const [ key, value ] of Object.entries( input ) ) {
-			const result = excludeBlank( value, filter );
-
-			if ( result ) {
-				output[ key ] = result;
-			}
-		}
-
-		return Object.values( output ).length ? output : undefined;
-	}
-};

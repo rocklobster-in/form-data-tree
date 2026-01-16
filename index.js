@@ -1,4 +1,4 @@
-import { dissolveName, excludeBlank } from './helpers';
+import { dissolveName } from './helpers';
 
 export default function FormDataTree() {
 	this.trunk = {};
@@ -8,6 +8,30 @@ export default function FormDataTree() {
 
 FormDataTree.prototype = {
 
+	filter( callback ) {
+		if ( ! ( callback instanceof Function ) ) {
+			throw new TypeError( "'callback' is not a function" );
+		}
+
+		const newTree = new FormDataTree();
+
+		for ( let [ key, value ] of Object.entries( this.trunk ) ) {
+			if ( value instanceof FormDataTree ) {
+				value = value.filter( callback );
+
+				if ( Object.values( value.trunk ).length ) {
+					newTree.set( key, value.filter( callback ) );
+				}
+			} else {
+				if ( callback( value ) ) {
+					newTree.set( key, value );
+				}
+			}
+		}
+
+		return newTree;
+	},
+
 	getAll( name, filter = 'string' ) {
 		const nameParts = dissolveName( name );
 
@@ -16,6 +40,12 @@ FormDataTree.prototype = {
 		}
 
 		let branch = this, currentNamePart;
+
+		if ( 'string' === filter ) {
+			branch = branch.filter( value => 'string' === typeof value );
+		} else if ( 'file' === filter ) {
+			branch = branch.filter( value => value instanceof File );
+		}
 
 		while ( currentNamePart = nameParts.shift() ) {
 			if (
@@ -28,9 +58,11 @@ FormDataTree.prototype = {
 			branch = branch.trunk[ currentNamePart ];
 		}
 
-		const result = excludeBlank( branch.valueOf(), filter ) ?? {};
-
-		return ( result instanceof Object ) ? result : { 0: result };
+		if ( branch instanceof FormDataTree ) {
+			return branch.valueOf();
+		} else {
+			return { 0: branch };
+		}
 	},
 
 	getAllFiles( name ) {
@@ -77,7 +109,7 @@ FormDataTree.from = formData => {
 
 	const tree = new FormDataTree();
 
-	for ( const [ key, value ] of formData ) {
+	for ( let [ key, value ] of formData ) {
 		const nameParts = dissolveName( key );
 
 		if ( ! nameParts.length ) {
@@ -86,7 +118,9 @@ FormDataTree.from = formData => {
 
 		// Don't include empty values!
 		if ( 'string' === typeof value ) {
-			if ( '' === value.trim() ) {
+			value = value.trim();
+
+			if ( '' === value ) {
 				continue;
 			}
 		} else if ( value instanceof Blob ) {
