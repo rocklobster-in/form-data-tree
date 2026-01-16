@@ -70,15 +70,32 @@ npm install @rocklobsterinc/form-data-tree
 ```
 import FormDataTree from '@rocklobsterinc/form-data-tree';
 
-// formData: FormData object
-const formDataTree = new FormDataTree( formData );
+// Creating a FormData object for testing.
+const formData = new FormData();
 
-// The getAll() method takes a field name as a parameter and returns a tree
-// or multi-layered map containing string values associated with that name.
-const stringTree = formDataTree.getAll( 'your-email' );
+formData.append( 'your-name', 'John Doe' );
+formData.append( 'your-penguin[]', 'Adelie' );
+formData.append( 'your-penguin[]', 'Emperor' );
+formData.append( 'your-penguin[]', 'Humboldt' );
+formData.append( 'your-file', new Blob( [ 'bla bla bla' ] ) );
 
-// The getAllFiles() method takes a field name as a parameter and returns
-// a tree or multi-layered map containing File objects associated with
-// that name.
-const fileTree = formDataTree.getAllFiles( 'your-resume' );
+// FormDataTree.from() creates a FormDataTree object from form data.
+const formDataTree = FormDataTree.from( formData );
+
+// FormDataTree.prototype.getAll() returns an object containing form data values.
+const yourName = formDataTree.getAll( 'your-name' );
+
+console.log( yourName );
+// Object { 0: "John Doe" }
+
+const yourPenguins = formDataTree.getAll( 'your-penguin' );
+
+console.log( yourPenguins );
+// Object { 0: "Adelie", 1: "Emperor", 2: "Humboldt" }
+
+// For file fields, use FormDataTree.prototype.getAllFiles().
+const yourFile = formDataTree.getAllFiles( 'your-file' );
+
+console.log( yourFile );
+// Object { 0: File }
 ```
