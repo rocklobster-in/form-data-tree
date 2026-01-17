@@ -70,6 +70,12 @@ FormDataTree.prototype = {
 	},
 
 	set( key, value ) {
+		value = FormDataTree.excludeBlank( value );
+
+		if ( ! value ) {
+			return this; // Don't include empty values!
+		}
+
 		if ( '' === key ) {
 			key = this.largestIndex++;
 		} else if ( /^[0-9]+$/.test( key ) ) {
@@ -78,10 +84,6 @@ FormDataTree.prototype = {
 			if ( this.largestIndex <= key ) {
 				this.largestIndex = key + 1;
 			}
-		}
-
-		if ( ! ( value instanceof Object ) ) {
-			value = value.toString();
 		}
 
 		this.trunk[ key.toString() ] = value;
@@ -106,6 +108,23 @@ FormDataTree.prototype = {
 };
 
 
+FormDataTree.excludeBlank = value => {
+	if ( value instanceof FormDataTree ) {
+		return value;
+	} else if ( value instanceof Blob ) {
+		if ( value.size ) {
+			return value;
+		}
+	} else {
+		value = value.toString().trim();
+
+		if ( value ) {
+			return value;
+		}
+	}
+};
+
+
 FormDataTree.from = formData => {
 	if ( ! ( formData instanceof FormData ) ) {
 		throw new TypeError( "'formData' is not a FormData object" );
@@ -120,19 +139,10 @@ FormDataTree.from = formData => {
 			continue;
 		}
 
-		// Don't include empty values!
-		if ( 'string' === typeof value ) {
-			value = value.trim();
+		value = FormDataTree.excludeBlank( value );
 
-			if ( '' === value ) {
-				continue;
-			}
-		} else if ( value instanceof Blob ) {
-			if ( ! value.size ) {
-				continue;
-			}
-		} else {
-			continue;
+		if ( ! value ) {
+			continue; // Don't include empty values!
 		}
 
 		const lastName = nameParts.pop();
