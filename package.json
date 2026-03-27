@@ -1,7 +1,7 @@
 {
   "name": "@rocklobsterinc/form-data-tree",
-  "version": "2.0.0",
-  "description": "FormDataTree fills a gap between the FormData interface and PHP superglobal variables.",
+  "version": "2.1.0",
+  "description": "FormDataTree standardizes form data for compatibility.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

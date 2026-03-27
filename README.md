@@ -1,6 +1,6 @@
 # FormDataTree
 
-FormDataTree fills a gap between the FormData interface and PHP superglobal variables.
+FormDataTree standardizes form data for compatibility.
 
 
 ## What problems does it solve?
