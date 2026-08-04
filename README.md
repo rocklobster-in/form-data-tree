@@ -2,7 +2,6 @@
 
 FormDataTree standardizes form data for compatibility.
 
-
 ## What problems does it solve?
 
 To access user input data through a web form on client-side, you can use the [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) interface. A FormData object provides a set of key/value pairs representing form fields and their values, and the data model emulates the `multipart/form-data` encoding type.
@@ -57,13 +56,11 @@ PHP treats the square brackets as an array literal, so the `$_POST` variable wil
 
 This gap becomes a problem when you need to process user input data in a consistent way on client-side and on server-side. FormDataTree has been created to resolve this problem. A FormDataTree object works as a wrapper of a FormData object, and has the ability to provide user input data in a structure equivalent to PHP's `$_POST` variable.
 
-
 ## Installation
 
 ```
 npm install @rocklobsterinc/form-data-tree
 ```
-
 
 ## Usage
 
