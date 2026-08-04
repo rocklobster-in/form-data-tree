@@ -1,7 +1,8 @@
 {
   "name": "@rocklobsterinc/form-data-tree",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "FormDataTree standardizes form data for compatibility.",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/rocklobster-in/form-data-tree/issues"
   },
-  "homepage": "https://github.com/rocklobster-in/form-data-tree#readme"
+  "homepage": "https://github.com/rocklobster-in/form-data-tree#readme",
+  "devDependencies": {
+    "prettier": "3.9.6"
+  }
 }
