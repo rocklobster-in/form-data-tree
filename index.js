@@ -1,4 +1,4 @@
-import { dissolveName } from "./helpers";
+import { dissolveName } from "./helpers.js";
 
 export default function FormDataTree() {
   this.trunk = {};
