@@ -1,6 +1,6 @@
 {
   "name": "@rocklobsterinc/form-data-tree",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "FormDataTree standardizes form data for compatibility.",
   "type": "module",
   "main": "index.js",
